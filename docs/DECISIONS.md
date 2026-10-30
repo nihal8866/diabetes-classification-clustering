@@ -1,11 +1,12 @@
-# Decision log
+# Final decision log
 
-Record actual choices and evidence as work progresses. Do not invent results in advance.
-
-| Decision | Reason | Evidence or tradeoff |
-| --- | --- | --- |
-| Run locally with free Python libraries | Zero additional API cost | No LLM or paid API is required for this assignment |
-| Use VS Code and Jupyter | Supports incremental learning and the required notebook deliverable | Python 3.10.11 and extensions confirmed installed |
-| Preserve original data in data/raw | Make transformations traceable | Original spreadsheet and archive retained |
-
-Pending: data quality handling, split strategy, evaluation metrics, preprocessing, classifiers, clustering method, and interpretation of results.
+- Preserve raw data; standardize Gender/CLASS whitespace and capitalization only.
+- Retain numeric extremes pending unit and source verification; do not infer corrections.
+- Exclude ID, No_Pation and CLASS from inputs.
+- Group identical input features to prevent exact-feature overlap; patient identity remains uncertain.
+- Use the first five-fold grouped holdout with seed 42: 799/201 records.
+- Use the same five training-only grouped folds for model comparison; fit preprocessing inside each fold.
+- Select random forest by macro-F1, giving equal class weight. CV macro-F1: 0.915 versus 0.658.
+- Freeze configuration before test evaluation; preserve all labels after observing errors.
+- Fit K-means without labels, initially K=3; report geometry and class agreement separately.
+- Record limitations: seven P test records, uncertain patient identity, unverified values/units and label provenance.
