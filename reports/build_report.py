@@ -103,19 +103,11 @@ page()
 h('6 Held out classification results')
 table([['Class','Precision','Recall','F1','Support'],['N','0.905','0.950','0.927',20],['P','1.000','1.000','1.000',7],['Y','0.994','0.989','0.991',174],['Macro average','0.966','0.980','0.973',201]], [120,85,80,80,85])
 p('The selected random forest correctly classified 198 of 201 test records, giving 98.5% accuracy. The test macro-F1 of 0.973 exceeds the cross-validation mean, but this single split does not establish better expected performance. In particular, perfect P precision and recall apply to only seven test examples; one additional missed P record would change its recall by approximately 14.3 percentage points.')
-matrix = Drawing(450,225)
-left,bottom,size=115,28,52
-matrix.add(String(left+1.5*size,bottom+3*size+37,'Predicted class',fontName='TNR',fontSize=11,textAnchor='middle',fillColor=colors.black))
-matrix.add(String(12,bottom+1.5*size,'Actual class',fontName='TNR',fontSize=11,fillColor=colors.black))
-for i,label in enumerate(['N','P','Y']):
-    matrix.add(String(left+(i+.5)*size,bottom+3*size+12,label,fontName='TNR-Bold',fontSize=11,textAnchor='middle',fillColor=colors.black))
-    matrix.add(String(left-15,bottom+(2.5-i)*size-4,label,fontName='TNR-Bold',fontSize=11,textAnchor='middle',fillColor=colors.black))
-for row,counts in enumerate([[19,0,1],[0,7,0],[2,0,172]]):
-    for col,value in enumerate(counts):
-        x=left+col*size;y=bottom+(2-row)*size
-        matrix.add(Rect(x,y,size,size,fillColor=None,strokeColor=colors.black,strokeWidth=.6))
-        matrix.add(String(x+size/2,y+size/2-4,str(value),fontName='TNR',fontSize=12,textAnchor='middle',fillColor=colors.black))
-story.append(matrix)
+with PILImage.open(ROOT/'figures/test_confusion_matrix.png') as source:
+    matrix_width, matrix_height = source.size
+story.append(Spacer(1,10))
+story.append(Image(str(ROOT/'figures/test_confusion_matrix.png'),width=340,height=340*matrix_height/matrix_width))
+story.append(Spacer(1,12))
 p('Figure 2  Held out random forest confusion matrix. Rows are actual classes and columns are predictions. The diagonal contains 198 correct predictions; the off diagonal cells contain three errors. Counts total 201 records.')
 
 page()
