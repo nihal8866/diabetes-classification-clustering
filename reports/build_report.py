@@ -8,7 +8,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame
+from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, Image
 from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.graphics.shapes import Drawing, Rect, Line, String
 
@@ -45,7 +45,6 @@ cover = ParagraphStyle('Cover',parent=body,alignment=TA_CENTER,fontSize=12,leadi
 story.append(Spacer(1,95))
 story.append(Paragraph('ASSOCIATE ML ENGINEER', ParagraphStyle('CoverRole',parent=cover,fontSize=12,spaceAfter=28)))
 story.append(Paragraph('Diabetes Classification<br/>and Clustering', ParagraphStyle('CoverTitle',parent=title,fontSize=28,leading=34,spaceAfter=18)))
-story.append(Paragraph('Take Home Assignment Report', ParagraphStyle('CoverSubtitle',parent=cover,fontSize=15,leading=20)))
 story.append(Spacer(1,50))
 story.append(Paragraph('Prepared by',cover))
 story.append(Paragraph('Nihal Mahato', ParagraphStyle('CoverAuthor',parent=cover,fontName='TNR-Bold',fontSize=18,leading=23)))
@@ -74,22 +73,13 @@ p('The initial audit found no exact duplicate rows across all columns, but 174 r
 
 page()
 story.append(Paragraph('Training data distributions', heading.clone('FigureHeading')))
-p('Figure 1 shows the ten numeric input features for the 799 training records. Each panel uses 20 equal width bins. Axes retain original dataset units; measurement units have not been independently verified. All bars and text are black.')
-hist_data = json.loads((ROOT/'figures/training_histograms.json').read_text(encoding='utf-8'))
-d = Drawing(450,490)
-for i,(name,values) in enumerate(hist_data.items()):
-    x=35+(i%2)*230; y=405-(i//2)*98
-    w=175; ht=60; counts=values['counts']; edges=values['edges']; top=max(counts)
-    d.add(String(x+w/2,y+ht+12,name,fontName='TNR-Bold',fontSize=10,textAnchor='middle',fillColor=colors.black))
-    d.add(Line(x,y,x+w,y,strokeColor=colors.black,strokeWidth=.5))
-    d.add(Line(x,y,x,y+ht,strokeColor=colors.black,strokeWidth=.5))
-    for j,count in enumerate(counts):
-        if count: d.add(Rect(x+j*w/20,y,w/20-.3,ht*count/top,fillColor=colors.black,strokeColor=None))
-    for value,labelx,anchor in [(edges[0],x,'start'),(edges[-1],x+w,'end')]:
-        d.add(String(labelx,y-11,f'{value:g}',fontName='TNR',fontSize=8,textAnchor=anchor,fillColor=colors.black))
-    d.add(String(x-5,y+ht-3,str(top),fontName='TNR',fontSize=8,textAnchor='end',fillColor=colors.black))
-    d.add(String(x-5,y-2,'0',fontName='TNR',fontSize=8,textAnchor='end',fillColor=colors.black))
-story.append(d)
+p('Figure 1 shows the ten numeric input features for the 799 training records. Each panel uses 20 equal width bins. Axes retain original dataset units; measurement units have not been independently verified. The figure is reproduced from the analysis notebook.')
+from PIL import Image as PILImage
+with PILImage.open(ROOT/'figures/training_distributions.png') as source:
+    image_width, image_height = source.size
+story.append(Spacer(1,12))
+story.append(Image(str(ROOT/'figures/training_distributions.png'),width=450,height=450*image_height/image_width))
+story.append(Spacer(1,14))
 p('Figure 1  Training data histograms. Horizontal axes show measurement values and vertical axes show record counts. Long right tails are especially visible for Cr, HDL, and VLDL. These patterns motivate scaling but do not establish that extreme values are invalid.')
 
 page()
