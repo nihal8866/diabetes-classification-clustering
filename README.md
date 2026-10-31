@@ -47,6 +47,4 @@ Only seven P test records exist. Perfect P test results do not establish perfect
 
 `assignment/`: task statement; `data/raw/`: local original data; `notebooks/`: analysis; `reports/`: PDF; `docs/`: decisions and workflow; `scripts/`: verification.
 
-`reports/build_report.py` is an optional authoring utility using ReportLab and Windows Times New Roman fonts, separate from analysis dependencies. Running the notebook does not require it.
-
 Submit the executed notebook, requirements.txt and PDF, plus the repository link if requested. Confirm private-repository reviewer access. See docs/SUBMISSION_CHECKLIST.md. A GitHub push is not an employer-portal submission.
